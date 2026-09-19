@@ -8,6 +8,8 @@ This project aims to develop a **distributed AI-assisted fire detection system**
 
 The system consists of one or more **Raspberry Pi edge devices** equipped with cameras. Each edge device periodically captures a short sequence of images and sends them as a batch to a central server. The server asynchronously analyzes the images using an AI model trained to distinguish between **fire** and **non-fire** scenes.
 
+All images, models, results can be downloaded as .zip files from the Google Drive: https://drive.google.com/drive/folders/1y8X6RQEl8c_YRX7PdVxjMGnYUr8XB_2C?usp=sharing
+
 The main goal of the diploma project is not to build a production-grade fire alarm system, but to demonstrate a complete **Minimum Viable Product (MVP)** in which the entire system flow works:
 
 ```text
