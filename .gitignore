@@ -1,0 +1,51 @@
+# Python environments and generated files
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.secret
+secrets/
+
+# Runtime data and local databases
+/storage/*
+!/storage/.gitkeep
+*.db
+*.sqlite
+*.sqlite3
+
+# Large datasets, captured images, and generated training output
+/data/*
+!/data/README.md
+/test-images/*
+!/test-images/README.md
+/training/prepared_data/*
+!/training/prepared_data/README.md
+/training/results/*
+!/training/results/README.md
+
+# Local model copies and checkpoints
+*.ckpt
+*.h5
+*.onnx
+*.keras
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

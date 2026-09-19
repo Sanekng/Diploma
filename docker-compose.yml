@@ -1,0 +1,202 @@
+services:
+
+  # ==========================================================
+  # MongoDB
+  # ==========================================================
+
+  mongodb:
+    image: mongo:8.0
+
+    container_name: fire-mongodb
+
+    restart: unless-stopped
+
+    environment:
+      MONGO_INITDB_DATABASE: fire_detection
+
+    volumes:
+      - mongodb_data:/data/db
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--quiet",
+          "--eval",
+          "db.adminCommand('ping').ok"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - fire-network
+
+
+  # ==========================================================
+  # Database Service
+  # ==========================================================
+
+  dbs:
+    build:
+      context: ./services/dbs
+
+    container_name: fire-dbs
+
+    restart: unless-stopped
+
+    environment:
+
+      MONGODB_URL: mongodb://mongodb:27017
+
+      MONGODB_DATABASE: fire_detection
+
+      BATCHES_TO_KEEP_PER_DEVICE: 3
+
+    ports:
+      - "8002:8002"
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    networks:
+      - fire-network
+
+
+  # ==========================================================
+  # Main Control Service
+  # ==========================================================
+
+  mcs:
+    build:
+      context: ./services/mcs
+
+    container_name: fire-mcs
+
+    restart: unless-stopped
+
+    environment:
+
+      IAS_URL: http://ias:8001
+
+      DBS_URL: http://dbs:8002
+
+      WDS_URL: http://wds:8003
+
+      DEVICE_OFFLINE_AFTER_SECONDS: 300
+
+      DEVICE_HEALTH_CHECK_INTERVAL_SECONDS: 30
+
+      BATCHES_TO_KEEP_PER_DEVICE: 3
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - ./storage:/app/storage
+
+    depends_on:
+
+      dbs:
+        condition: service_started
+
+      ias:
+        condition: service_started
+
+      wds:
+        condition: service_started
+
+    networks:
+      - fire-network
+
+
+  # ==========================================================
+  # Image Analysis Service
+  # ==========================================================
+
+  ias:
+    build:
+      context: ./services/ias
+
+    container_name: fire-ias
+
+    restart: unless-stopped
+
+    environment:
+
+      MODEL_ID: fire-detection-mobilenetv2
+
+      MODEL_VERSION: 1.0.0
+
+      MODEL_PATH: /app/models/fire_detection_model.keras
+
+      STORAGE_PATH: /app/storage
+
+      EXPECTED_IMAGES_PER_BATCH: 5
+
+      FIRE_THRESHOLD: 0.5
+
+    ports:
+      - "8001:8001"
+
+    volumes:
+      - ./storage:/app/storage
+
+    networks:
+      - fire-network
+
+
+  # ==========================================================
+  # Web Dashboard Service
+  # ==========================================================
+
+  wds:
+    build:
+      context: ./services/wds
+
+    container_name: fire-wds
+
+    restart: unless-stopped
+
+    environment:
+
+      MCS_URL: http://mcs:3000
+
+      DBS_URL: http://dbs:8002
+
+      STORAGE_PATH: /app/storage
+
+    ports:
+      - "8003:8003"
+
+    volumes:
+
+      - ./storage:/app/storage:ro
+
+    depends_on:
+      dbs:
+        condition: service_started
+
+    networks:
+      - fire-network
+
+# ============================================================
+# Volumes
+# ============================================================
+
+volumes:
+
+  mongodb_data:
+
+
+# ============================================================
+# Network
+# ============================================================
+
+networks:
+
+  fire-network:
+    driver: bridge

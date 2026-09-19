@@ -1,0 +1,43 @@
+{
+  "device": {
+    "id": "edge-001"
+  },
+
+  "server": {
+    "base_url": "http://192.168.137.20:3000",
+
+    "register_endpoint": "/api/v1/devices/register",
+    "batch_endpoint": "/api/v1/batches",
+    "health_endpoint": "/api/v1/devices/health",
+
+    "request_timeout_seconds": 15,
+
+    "api_token": "change-me-to-a-real-secret"
+  },
+
+  "capture": {
+    "images_per_batch": 5,
+    "interval_seconds": 5,
+
+    "resolution": [
+      1920,
+      1080
+    ],
+
+    "jpeg_quality": 85,
+
+    "pause_between_batches_seconds": 600
+  },
+
+  "storage": {
+    "image_directory": "images"
+  },
+
+  "health": {
+    "interval_seconds": 30
+  },
+
+  "logging": {
+    "level": "INFO"
+  }
+}

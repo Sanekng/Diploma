@@ -1,0 +1,19 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+.git
+.gitignore
+
+.env
+venv/
+.venv/
+
+*.log
+
+storage/
+
+# Don't accidentally include local training artifacts.
+# Remove this line if you intentionally want to build
+# Docker images containing an already-trained model.

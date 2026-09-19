@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Fire Detection Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ================================================= -->
+    <!-- SIDEBAR -->
+    <!-- ================================================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🔥
+            </div>
+
+            <div>
+
+                <h1>
+                    FireWatch
+                </h1>
+
+                <span>
+                    Fire Detection System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="system-status">
+
+            <div
+                id="system-status-indicator"
+                class="status-dot online"
+            ></div>
+
+            <div>
+
+                <strong>
+                    System
+                </strong>
+
+                <span id="system-status-text">
+                    Operational
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav>
+
+            <a
+                href="#overview"
+                class="nav-item active"
+            >
+                <span>◉</span>
+                Overview
+            </a>
+
+            <a
+                href="#cameras"
+                class="nav-item"
+            >
+                <span>◉</span>
+                Cameras
+            </a>
+
+            <a
+                href="#activity"
+                class="nav-item"
+            >
+                <span>◷</span>
+                Activity
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div>
+                MVP
+                <span>v0.1.0</span>
+            </div>
+
+            <div>
+                Last update:
+                <span id="last-update">
+                    —
+                </span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN -->
+    <!-- ================================================= -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h2>
+                    Monitoring Overview
+                </h2>
+
+                <p>
+                    Real-time status of fire detection cameras
+                </p>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <button
+                    id="refresh-button"
+                    class="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================================= -->
+        <!-- STATISTICS -->
+        <!-- ================================================= -->
+
+        <section
+            id="overview"
+            class="stats-grid"
+        >
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📷
+                </div>
+
+                <div>
+
+                    <span>
+                        Registered cameras
+                    </span>
+
+                    <strong id="total-devices">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon success">
+                    ✓
+                </div>
+
+                <div>
+
+                    <span>
+                        Online
+                    </span>
+
+                    <strong id="online-devices">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon warning">
+                    !
+                </div>
+
+                <div>
+
+                    <span>
+                        Degraded
+                    </span>
+
+                    <strong id="degraded-devices">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon danger">
+                    🔥
+                </div>
+
+                <div>
+
+                    <span>
+                        Fire detections
+                    </span>
+
+                    <strong id="fire-detections">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- MAP -->
+        <!-- ================================================= -->
+
+        <section class="panel map-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Camera Map
+                    </h3>
+
+                    <p>
+                        Registered edge devices
+                    </p>
+
+                </div>
+
+
+                <div class="legend">
+
+                    <span>
+                        <i class="legend-dot online"></i>
+                        Online
+                    </span>
+
+                    <span>
+                        <i class="legend-dot degraded"></i>
+                        Degraded
+                    </span>
+
+                    <span>
+                        <i class="legend-dot offline"></i>
+                        Offline
+                    </span>
+
+                    <span>
+                        <i class="legend-dot fire"></i>
+                        Fire
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="map"
+                class="map"
+            ></div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- LOWER GRID -->
+        <!-- ================================================= -->
+
+        <section class="content-grid">
+
+
+            <!-- CAMERAS -->
+
+            <div
+                id="cameras"
+                class="panel"
+            >
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Cameras
+                        </h3>
+
+                        <p>
+                            Current camera health
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="camera-list"
+                    class="camera-list"
+                >
+
+                    <div class="empty-state">
+                        No registered cameras.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY -->
+
+            <div
+                id="activity"
+                class="panel"
+            >
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recent Activity
+                        </h3>
+
+                        <p>
+                            Latest system events
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="activity-list"
+                    class="activity-list"
+                >
+
+                    <div class="empty-state">
+                        No recent activity.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- RECENT ANALYSIS -->
+        <!-- ================================================= -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Recent Analysis
+                    </h3>
+
+                    <p>
+                        Latest processed image batches
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Device
+                            </th>
+
+                            <th>
+                                Batch
+                            </th>
+
+                            <th>
+                                Time
+                            </th>
+
+                            <th>
+                                Result
+                            </th>
+
+                            <th>
+                                Confidence
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                        id="batch-table"
+                    >
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- DEVICE MODAL -->
+<!-- ===================================================== -->
+
+<div
+    id="device-modal"
+    class="modal hidden"
+>
+
+    <div class="modal-content">
+
+        <button
+            id="close-modal"
+            class="modal-close"
+        >
+            ×
+        </button>
+
+
+        <div
+            id="modal-body"
+        >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+></script>
+
+<script
+    src="/static/js/dashboard.js"
+></script>
+
+</body>
+
+</html>

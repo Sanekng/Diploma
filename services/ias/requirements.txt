@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+tensorflow
+numpy
+pillow
+scikit-learn
+opencv-python
+tqdm
+numpy
